@@ -1,0 +1,58 @@
+<!DOCTYPE html> 
+<html lang="ckb" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>... کردنەوەی لینک </title> 
+    <style>
+        @font-face {
+            font-family: 'K24Kurdish';
+            src: url('K24KurdishBold-Bold.ttf');
+        }
+        body { font-family: 'K24Kurdish'; background-color: #f4f4f4; text-align: center; padding-top: 50px; }
+        .logo { height: 60px; border-radius: 12px; margin-bottom: 20px; }
+        .msg { font-size: 20px; color: #333; }
+    </style>
+</head>
+<body>
+
+    <img src="ema-logo.png" alt="EMA Logo" class="logo">
+    <div class="msg" id="st">چاوەڕێ بکە...</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        var firebaseConfig = {
+          apiKey: "AIzaSyBX9EOw1JS3s4n5ArzECP9zFnc1m7lDaQk",
+            authDomain: "ematools-proj.firebaseapp.com",
+          projectId: "ematools-proj",
+            storageBucket: "ematools-proj.firebasestorage.app",
+          messagingSenderId: "931284717297",
+            appId: "1:931284717297:web:e9b19695880a7ff3a72350"
+        };
+
+        var myApp = initializeApp(firebaseConfig);
+        var myDb = getFirestore(myApp);
+
+        var urlParams = new URLSearchParams(window.location.search);
+        var getCode = urlParams.get('c'); // وەرگرتنی کۆدەکە
+
+        if (getCode) { 
+            var findQuery = query(collection(myDb, "links"), where("code", "==", getCode)); 
+            // لێرەدا فەرمانێک بۆ داتابەیسی Firestore دەنێرین. 
+        
+        
+            getDocs(findQuery).then(function(snapshot) { 
+                if (!snapshot.empty) { // ئەگەر لینکەکە هەبوو
+                    var myData = snapshot.docs[0].data();
+                    window.location.href = myData.longUrl; 
+                } else {
+                    document.getElementById('st').innerText = "ببورە، ئەم لینکە بوونی نییە یان سڕاوەتەوە."; 
+                }
+            });
+        } 
+    </script>
+
+</body>
+</html>
